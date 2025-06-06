@@ -7,6 +7,6 @@ to analyze consumer insights and generate a mock presentation for small business
 # Inputs:
 + raw data file of a nationally representative consumer survey on motivators for credit card use
   
-# Outputs:
+# Data Cleaning & Analysis:
 + factor categorical variables
 + run statistical tests
