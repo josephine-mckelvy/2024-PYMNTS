@@ -1,0 +1,216 @@
+---
+title: "PYMNTS - Credit Card Motivators"
+author: "Josephine McKelvy"
+date: "2024-08-06"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+setwd("~/PYMNTS")
+
+#install.packages("sjPlot")
+
+library(readxl)
+library(sjPlot)
+
+Test_Matrix <- read_excel("Test - Matrix.xlsm")
+Test_Matrix <- Test_Matrix [2:nrow(Test_Matrix),] 
+
+Test_Matrix$Financial_Lifestyle <- factor(Test_Matrix$D15,
+                          levels = c("I do not live paycheck to paycheck",
+                                     "I live paycheck to paycheck but am comfortably paying my bills each month.",
+                                     "I live paycheck to paycheck and have difficulty paying my bills each month."),
+                          ordered=TRUE)
+Test_Matrix$Savings <- factor(Test_Matrix$D16,
+                          levels = c("I have no savings.",
+                                     "Less than $500",
+                                     "Between $500 and $1,000",
+                                     "Between $1,000 and $2,500",
+                                     "Between $2,500 and $5,000",
+                                     "Between $5,000 and $10,000",
+                                     "Between $10,000 and $15,000",
+                                     "Between $15,000 and $25,000",
+                                     "More than $25,000"),
+                          ordered=TRUE)
+                          
+Test_Matrix$Monthly_Credit_Card_Usage <- factor(Test_Matrix$Q05,
+                          levels = c("Less than 20 percent",
+                                     "At least 20 percent but less than 40 percent",
+                                     "At least 40 percent but less than 60 percent",
+                                     "At least 60 percent but less than 80 percent",
+                                     "At least 80 percent"),
+                          ordered=TRUE)
+                          
+CC_factors <- subset(Test_Matrix, select = c(36:44))
+CC_factors$Q12_1 <- factor(CC_factors$Q12_1,
+                          labels = c("Extremely important",
+                                     "Very important",
+                                     "Somewhat important",
+                                     "Slightly important",
+                                     "Not at all important"),
+                          ordered=TRUE)
+CC_factors$Q12_2 <- factor(CC_factors$Q12_2,
+                          labels = c("Extremely important",
+                                     "Very important",
+                                     "Somewhat important",
+                                     "Slightly important",
+                                     "Not at all important"),
+                          ordered=TRUE)
+CC_factors$Q12_3 <- factor(CC_factors$Q12_3,
+                          labels = c("Extremely important",
+                                     "Very important",
+                                     "Somewhat important",
+                                     "Slightly important",
+                                     "Not at all important"),
+                          ordered=TRUE)                         
+CC_factors$Q12_4 <- factor(CC_factors$Q12_4,
+                          labels = c("Extremely important",
+                                     "Very important",
+                                     "Somewhat important",
+                                     "Slightly important",
+                                     "Not at all important"),
+                          ordered=TRUE)                          
+CC_factors$Q12_5 <- factor(CC_factors$Q12_5,
+                          labels = c("Extremely important",
+                                     "Very important",
+                                     "Somewhat important",
+                                     "Slightly important",
+                                     "Not at all important"),
+                          ordered=TRUE)
+CC_factors$Q12_6 <- factor(CC_factors$Q12_6,
+                          labels = c("Extremely important",
+                                     "Very important",
+                                     "Somewhat important",
+                                     "Slightly important",
+                                     "Not at all important"),
+                          ordered=TRUE)
+CC_factors$Q12_7 <- factor(CC_factors$Q12_7,
+                          labels = c("Extremely important",
+                                     "Very important",
+                                     "Somewhat important",
+                                     "Slightly important",
+                                     "Not at all important"),
+                          ordered=TRUE)
+CC_factors$Q12_8 <- factor(CC_factors$Q12_8,
+                          labels = c("Extremely important",
+                                     "Very important",
+                                     "Somewhat important",
+                                     "Slightly important",
+                                     "Not at all important"),
+                          ordered=TRUE)
+CC_factors$Q12_9 <- factor(CC_factors$Q12_9,
+                          labels = c("Extremely important",
+                                     "Very important",
+                                     "Somewhat important",
+                                     "Slightly important",
+                                     "Not at all important"),
+                          ordered=TRUE)
+
+##########
+# sjPlot #
+##########
+income_live <- tab_xtab(Test_Matrix$D11, Test_Matrix$Financial_Lifestyle, show.summary=TRUE)
+print(income_live) 
+#Cramer's V=0.2 indicates weak positive association (but significant relationship) between income and perceived lifestyle
+
+income_save <- tab_xtab(Test_Matrix$D11, Test_Matrix$Savings)
+print(income_save)
+#Cramer's V=0.2 indicates weak positive association (but significant relationship) between income and savings
+
+save_live <- tab_xtab(Test_Matrix$Savings, Test_Matrix$Financial_Lifestyle)
+print (save_live)
+#Cramer's V=0.46 indicates medium effect size between savings and perceived lifestyle
+
+CC_live <- tab_xtab(Test_Matrix$Monthly_Credit_Card_Usage,Test_Matrix$Financial_Lifestyle)
+print(CC_live)
+#Cramer's V=0.13 indicates weak positive association (but significant relationship) between credit card usage and perceived lifestyle
+
+CC_save <- tab_xtab(Test_Matrix$Monthly_Credit_Card_Usage, Test_Matrix$D16_ordered)
+print(CC_save)
+#Cramer's V=0.17 indicates weak positive association (but significant relationship) between credit card usage and savings
+
+CC_income <- tab_xtab(Test_Matrix$Monthly_Credit_Card_Usage,Test_Matrix$D11)
+print(CC_income)
+#Cramer's V=0.13 indicates weak positive association (but significant relationship) between credit card usage and income
+
+#https://www.statology.org/correlation-between-categorical-variables/; https://statisticseasily.com/cramers-v/
+#Cramer's V: correlation between nominal categorical variables
+
+#Polychoric correlation between ordinal categorical variables
+#install.packages("psych")
+#library(psych)
+#polychoric(Test_Matrix$D11, Test_Matrix$D15_ordered)
+
+ER_CC <- tab_xtab(Test_Matrix$D16_ordered, Test_Matrix$D17_1)
+print(ER_CC)
+
+ER_RCC <- tab_xtab(Test_Matrix$D16_ordered, Test_Matrix$D17_4)
+print(ER_RCC)
+
+ER_CS <- tab_xtab(Test_Matrix$D16_ordered, Test_Matrix$D17_5)
+print(ER_CS)
+
+ER_LOC <- tab_xtab(Test_Matrix$D16_ordered, Test_Matrix$D17_6)
+print(ER_LOC)
+
+ER_FF <- tab_xtab(Test_Matrix$D16_ordered, Test_Matrix$D17_7)
+print(ER_FF)
+
+ER_PDL <- tab_xtab(Test_Matrix$D16_ordered, Test_Matrix$D17_8)
+print(ER_PDL)
+
+ER_SS <- tab_xtab(Test_Matrix$D16_ordered, Test_Matrix$D17_9)
+print(ER_SS)
+
+ER_no <- tab_xtab(Test_Matrix$D16_ordered, Test_Matrix$D17_10)
+print(ER_no)
+
+
+
+
+#cut rows 2-3 with question wording & "ImportID"
+raw.df$Q3 <- as.character(raw.df$Q3) #convert CATA to character and not factor
+
+## Including Plots
+
+install.packages("ggrepel")
+library(ggrepel)
+set_theme(
+  base=theme_classic(),
+  axis.tickslen=0,
+  axis.linecolor="white",
+  legend.pos="bottom"
+)
+scale_color_sjplot("#1C4D0F")
+
+#install.packages("colorspace")
+library("colorspace")
+hcl_palettes(plot = TRUE)
+#plot_frq(CC_factors) #column chart
+#plot_likert(CC_factors) #stacked bar that removes odd-numbered "neither"
+plot_stackfrq(CC_factors, 
+              title="Credit Card Factors",
+              show.prc=FALSE,
+             #scale_color_discrete_sequential(palette="Green-Yellow"),
+              sort.frq=c("null")
+              )#percents, not counts
+
+
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
